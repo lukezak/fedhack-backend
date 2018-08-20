@@ -25,6 +25,7 @@ def create_new_folder(local_dir):
     return newpath
 
 @app.route('/', methods = ['POST'])
+@cross_origin()
 def api_root():
 	app.logger.info(PROJECT_HOME)
 	if request.method == 'POST':
@@ -43,6 +44,7 @@ def api_root():
 		return "Oops, Something went wrong!"
 
 @app.route('/face', methods = ['POST'])
+@cross_origin()
 def api_face():
 	app.logger.info(PROJECT_HOME)
 	if request.method == 'POST':
