@@ -1,0 +1,5 @@
+// run python server
+
+python server.py
+
+nohup python server.py &
