@@ -24,8 +24,12 @@ def create_new_folder(local_dir):
         os.makedirs(newpath)
     return newpath
 
-@app.route('/', methods = ['POST'])
+@app.route('/', methods = ['GET'])
 def api_root():
+	return "Hello World"
+
+@app.route('/register', methods = ['POST'])
+def api_register():
 	app.logger.info(PROJECT_HOME)
 	if request.method == 'POST':
 		app.logger.info(app.config['KNOWN_FOLDER'])
