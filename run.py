@@ -59,6 +59,7 @@ def match_face(image):
             fh.write(img_data.decode('base64'))
     app.logger.info("saving {}".format(saved_path))
     directory = app.config['KNOWN_FOLDER']
+    create_new_folder(app.config['KNOWN_FOLDER'])
     unknown_face = face_recognition.load_image_file(saved_path)
     for filename in os.listdir(directory):
         if filename.endswith(".jpg"): 
