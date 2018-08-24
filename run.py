@@ -7,7 +7,7 @@
 
 import logging, os
 from eve import Eve
-from flask import url_for, send_from_directory, request
+from flask import url_for, send_from_directory, request, send_from_directory
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 import face_recognition
@@ -24,7 +24,7 @@ else:
     port = 5000
     host = '127.0.0.1'
 
-app = Eve()
+app = Eve(__name__, static_url_path="")
 CORS(app)
 
 """x
@@ -38,6 +38,8 @@ KNOWN_FOLDER = '{}/known/'.format(PROJECT_HOME)
 UNKNOWN_FOLDER = '{}/unknown/'.format(PROJECT_HOME)
 app.config['KNOWN_FOLDER'] = KNOWN_FOLDER
 app.config['UNKNOWN_FOLDER'] = UNKNOWN_FOLDER
+ERR_NO_FACE = "Unable to locate any faces in the image"
+ERR_NO_MATCH = "No facial match"
 
 """
     Helpers
@@ -69,7 +71,8 @@ def match_face(image):
                 known_face_encoding = face_recognition.face_encodings(known_face)[0]
                 unknown_face_encoding = face_recognition.face_encodings(unknown_face)[0]
             except IndexError:
-                return("Unable to locate any faces in the image. Check the image file.")
+                ## No Match
+                return ERR_NO_FACE
             known_faces = [
                 known_face_encoding
             ]
@@ -80,7 +83,7 @@ def match_face(image):
                 continue
         else:
             continue
-    return "False"
+    return ERR_NO_MATCH
 
 def save_face(image):
     app.logger.info("saving image")
@@ -92,6 +95,12 @@ def save_face(image):
     with open(saved_path, "wb") as fh:
             fh.write(img_data.decode('base64'))
     app.logger.info("saving {}".format(saved_path))
+    try:
+        known_face = face_recognition.load_image_file(saved_path)
+        face_recognition.face_encodings(known_face)[0]
+    except IndexError:
+        ## No Match
+        return ERR_NO_FACE
     return user_id
 
 """
@@ -101,19 +110,33 @@ def save_face(image):
 def api_root():
     return "BioMedic (Fedhacker!) Medic"
 
+# Static Content Route 
+@app.route('/known/<path:path>')
+def send_ui(path):
+    return send_from_directory('known', path)
+
 @app.route('/auth', methods = ['POST'])
 def auth():
     app.logger.info("AuthN AuthZ user by image")
     img_data = request.form['image']
     img_data = img_data.replace('data:image/jpeg;base64,', '')
-    return match_face(img_data)
+    result = match_face(img_data)
+    if result == ERR_NO_MATCH:
+        return result, 401
+    if result == ERR_NO_FACE:
+        return result, 400
+    return result, 200
+
 
 @app.route('/register', methods = ['POST'])
 def api_register():
     app.logger.info("Registering user")
     img_data = request.form['image']
     img_data = img_data.replace('data:image/jpeg;base64,', '')
-    return save_face(img_data)
+    result = save_face(img_data)
+    if result == ERR_NO_FACE:
+        return result, 400  
+    return result
 
 if __name__ == '__main__':
     app.run(host=host, port=port)
