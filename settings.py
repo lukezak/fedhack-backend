@@ -1,21 +1,11 @@
 # -*- coding: utf-8 -*-
 
 """
-    eve-demo settings
+    BioMedic Backend Settings
     ~~~~~~~~~~~~~~~~~
 
     Settings file for our little demo.
 
-    PLEASE NOTE: We don't need to create the two collections in MongoDB.
-    Actually, we don't even need to create the database: GET requests on an
-    empty/non-existant DB will be served correctly ('200' OK with an empty
-    collection); DELETE/PATCH will receive appropriate responses ('404' Not
-    Found), and POST requests will create database and collections when needed.
-    Keep in mind however that such an auto-managed database will most likely
-    perform poorly since it lacks any sort of optimized index.
-
-    :copyright: (c) 2016 by Nicola Iarocci.
-    :license: BSD, see LICENSE for more details.
 """
 
 import os
@@ -64,23 +54,18 @@ people = {
     'schema': {
         'photoId': {
             'type': 'string',
-            'minlength': 1,
-            'maxlength': 256,
             # 'accountname' is an API entry-point, so we need it to be unique.
             'unique': True,
         },
         'firstName': {
             'type': 'string',
-            'minlength': 1,
             'maxlength': 156,
         },
         'lastName': {
             'type': 'string',
-            'minlength': 1,
-            'maxlength': 500
         },
         'dateOfBirth': {
-            'type': 'datetime',
+            'type': 'string',
         },
         # 'role' is a list, and can only contain values from 'allowed'.
         # 'role': {
@@ -89,13 +74,7 @@ people = {
         # },
         # An embedded 'strongly-typed' dictionary.
         'address': {
-            'type': 'dict',
-            'schema': {
-                'addressLineOne': {'type': 'string'},
-                'addressLineTwo': {'type': 'string'},
-                'city': {'type': 'string'},
-                'postcode': {'type': 'string'}
-            },
+            'type': 'string',
         },
         'homePhone' : {
             'type': 'string'
@@ -110,7 +89,7 @@ people = {
             'type': 'string'
         },
         'alergens' : {
-            'type' : 'list'
+            'type': 'string',
         },
         'medicalHistory' : {
             'type': 'string'
@@ -119,10 +98,10 @@ people = {
             'type': 'string'
         },
         'habits' : {
-            'type': 'list'
+            'type': 'string',
         },
         'vacinations' : {
-            'type': 'list'
+            'type': 'string',
         },
         'occupation' : {
             'type': 'string'
