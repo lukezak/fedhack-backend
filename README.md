@@ -42,13 +42,13 @@ Modify username and password for mongodb server in `settings.py`
 
 Run an instance of the backend service
 
-   export PORT=5000 #exposes service on all IPs (without service will only be available on localhost)
-   . .venv/bin/activiate
-   nohup python run.py &
+    export PORT=5000 #exposes service on all IPs (without service will only be available on localhost)
+    . .venv/bin/activiate
+    nohup python run.py &
 
 ### Stop
 
-   ^C
+    ^C
 
 
 
